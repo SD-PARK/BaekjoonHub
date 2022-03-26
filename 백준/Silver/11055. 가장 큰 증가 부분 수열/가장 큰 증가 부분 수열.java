@@ -11,10 +11,9 @@ public class Main {
 		for(int i=1; i<=N; i++) {
 			A[i] = Integer.parseInt(a[i-1]);
 			D[i] = A[i];
-			for(int j=1; j<=i; j++) {
+			for(int j=1; j<=i; j++)
 				if(D[j]+A[i] > D[i] && A[i] > A[j])
 					D[i] = D[j]+A[i];
-			}
 			max = (D[i]>max)?D[i]:max;
 		}
 		System.out.print(max);
