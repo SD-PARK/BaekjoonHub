@@ -1,21 +1,17 @@
 import java.util.*;
 
 public class Main {
-    public static long mod = 1000000000L;
-    public static void main(String args[]) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int k = sc.nextInt();
-        long[][] d = new long[k+1][n+1];
-        d[0][0] = 1;
-        for (int i=1; i<=k; i++) {
-            for (int j=0; j<=n; j++) {
-                for (int l=0; l<=j; l++) {
-                    d[i][j] += d[i-1][j-l];
-                    d[i][j] %= mod;
-                }
-            }
-        }
-        System.out.println(d[k][n]);
-    }
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		int K = sc.nextInt();
+		long[][] D = new long[K+1][N+1];
+		int mod = 1_000_000_000;
+		D[0][0] = 1;
+		for(int k=1; k<=K; k++)
+			for(int n=0; n<=N; n++)
+				for(int i=0; i<=n; i++)
+					D[k][n] = (D[k][n] + D[k-1][n-i]) % mod;
+		System.out.print(D[K][N]);
+	}
 }
