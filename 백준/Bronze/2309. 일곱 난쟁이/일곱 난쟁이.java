@@ -1,32 +1,25 @@
-import java.io.*;
+import java.util.*;
 
-class Main {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringBuilder sb = new StringBuilder();
-		
-		int[] arr = new int[9];
-		boolean[] sort = new boolean[100];
+public class Main {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int[] h = new int[9];
 		int sum = 0;
-		
 		for(int i=0; i<9; i++) {
-			arr[i] = Integer.parseInt(br.readLine());
-			sort[arr[i]] = true;
-			sum += arr[i];
+			h[i] = sc.nextInt();
+			sum += h[i];
 		}
-		Loop1:
-		for(int i=0; i<9; i++)
-			for(int j=0; j<9; j++)
-				if(j!=i && ((arr[i] + arr[j]) == (sum - 100))) {
-					sort[arr[i]] = false;
-					sort[arr[j]] = false;
-					break Loop1;
+		for(int i=0; i<8; i++) {
+			for(int j=i+1; j<9; j++) {
+				if(sum - (h[i] + h[j]) == 100) {
+					h[i] = 0;
+					h[j] = 0;
+					Arrays.sort(h);
+					for(int k=2; k<9; k++)
+						System.out.println(h[k]);
+					return;
 				}
-
-		for(int i=0; i<100; i++)
-			if(sort[i])
-				sb.append(i + "\n");
-		
-		System.out.print(sb);
+			}
+		}
 	}
 }
