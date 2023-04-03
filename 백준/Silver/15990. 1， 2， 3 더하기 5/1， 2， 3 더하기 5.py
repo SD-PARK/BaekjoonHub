@@ -13,4 +13,4 @@ for i in range(2, 100001) :
 t = int(input())
 for _ in range(t) :
     n = int(input())
-    print((d[n][1] + d[n][2] + d[n][3]) % mod)
+    print(sum(d[n]) % mod)
