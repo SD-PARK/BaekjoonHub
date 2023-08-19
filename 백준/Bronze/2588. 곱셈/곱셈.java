@@ -2,16 +2,13 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        int num1, num2;
         Scanner scan = new Scanner(System.in);
-        num1 = scan.nextInt();
-        num2 = scan.nextInt();
+        int a = scan.nextInt();
+        int b = scan.nextInt();
 
-        System.out.println(num1 * (num2 % 10));
-        System.out.println(num1 * (num2 / 10 % 10));
-        System.out.println(num1 * (num2 / 100));
-        System.out.println(num1 * num2);
-
-        scan.close();
+        System.out.println(a * (b % 10));
+        System.out.println(a * ((b / 10) % 10));
+        System.out.println(a * (b / 100));
+        System.out.println(a * b);
     }
 }
