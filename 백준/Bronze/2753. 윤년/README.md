@@ -1,4 +1,4 @@
-# [Bronze IV] 윤년 - 2753 
+# [Bronze V] 윤년 - 2753 
 
 [문제 링크](https://www.acmicpc.net/problem/2753) 
 
@@ -8,7 +8,7 @@
 
 ### 분류
 
-구현(implementation), 수학(math)
+구현, 사칙연산, 수학
 
 ### 문제 설명
 
