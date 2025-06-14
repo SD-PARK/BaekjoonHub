@@ -3,7 +3,7 @@ import java.util.StringTokenizer;
 
 public class Main {
     private static final int SET_SIZE = 20;
-    private static final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+    private static final StringBuilder stringBuilder = new StringBuilder();
 
     private static int bitSet;
 
@@ -19,7 +19,7 @@ public class Main {
             executeCommand(operation, x);
         }
 
-        writer.flush();
+        System.out.print(stringBuilder);
     }
 
     private static void executeCommand(String operation, int x) throws IOException {
@@ -32,7 +32,7 @@ public class Main {
                 break;
             case "check":
                 char flag = ((bitSet & (1 << (x - 1))) != 0) ? '1' : '0';
-                writer.append(flag).append("\n");
+                stringBuilder.append(flag).append("\n");
                 break;
             case "toggle":
                 bitSet ^= (1 << (x - 1));
