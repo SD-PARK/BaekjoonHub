@@ -1,8 +1,9 @@
 import java.io.*;
+import java.util.StringTokenizer;
 
 public class Main {
     private static final int SET_SIZE = 20;
-    private static final WriteHandler writer = new WriteHandler(System.out);
+    private static final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
     private static int bitSet;
 
@@ -12,17 +13,16 @@ public class Main {
         bitSet = 0;
 
         for (int i=0; i<cmdCount; i++) {
-            String[] cmd = reader.readLine().split("\\s+");
-            executeCommand(cmd);
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            String operation = tokenizer.nextToken();
+            int x = (tokenizer.hasMoreTokens()) ? Integer.parseInt(tokenizer.nextToken()) : 0;
+            executeCommand(operation, x);
         }
 
         writer.flush();
     }
 
-    private static void executeCommand(String[] cmd) throws IOException {
-        String operation = cmd[0];
-        int x = (cmd.length >= 2) ? Integer.parseInt(cmd[1]) : 0;
-
+    private static void executeCommand(String operation, int x) throws IOException {
         switch(operation) {
             case "add":
                 bitSet |= (1 << (x - 1));
@@ -31,8 +31,8 @@ public class Main {
                 bitSet &= ~(1 << (x - 1));
                 break;
             case "check":
-                int is = ((bitSet & (1 << (x - 1))) != 0) ? 1 : 0;
-                writer.appendLine(is);
+                char flag = ((bitSet & (1 << (x - 1))) != 0) ? '1' : '0';
+                writer.append(flag).append("\n");
                 break;
             case "toggle":
                 bitSet ^= (1 << (x - 1));
@@ -44,21 +44,5 @@ public class Main {
                 bitSet = 0;
                 break;
         }
-    }
-}
-
-class WriteHandler {
-    private final BufferedWriter writer;
-
-    public WriteHandler(OutputStream out) {
-        writer = new BufferedWriter(new OutputStreamWriter(out));
-    }
-
-    public void appendLine(int num) throws IOException {
-        writer.append(Integer.toString(num)).append("\n");
-    }
-
-    public void flush() throws IOException {
-        writer.flush();
     }
 }
