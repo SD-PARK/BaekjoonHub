@@ -1,26 +1,25 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Main {
     private static final int SET_SIZE = 20;
-    private static final StringBuilder stringBuilder = new StringBuilder();
+    private static final WriteHandler writer = new WriteHandler(System.out);
 
     private static int bitSet;
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        int m = Integer.parseInt(reader.readLine());
+        int cmdCount = Integer.parseInt(reader.readLine());
         bitSet = 0;
 
-        for (int i=0; i<m; i++) {
-            executeCommand(reader.readLine().split("\\s+"));
+        for (int i=0; i<cmdCount; i++) {
+            String[] cmd = reader.readLine().split("\\s+");
+            executeCommand(cmd);
         }
 
-        System.out.println(stringBuilder);
+        writer.flush();
     }
 
-    private static void executeCommand(String[] cmd) {
+    private static void executeCommand(String[] cmd) throws IOException {
         String operation = cmd[0];
         int x = (cmd.length >= 2) ? Integer.parseInt(cmd[1]) : 0;
 
@@ -33,7 +32,7 @@ public class Main {
                 break;
             case "check":
                 int is = ((bitSet & (1 << (x - 1))) != 0) ? 1 : 0;
-                stringBuilder.append(is).append("\n");
+                writer.appendLine(is);
                 break;
             case "toggle":
                 bitSet ^= (1 << (x - 1));
@@ -45,5 +44,21 @@ public class Main {
                 bitSet = 0;
                 break;
         }
+    }
+}
+
+class WriteHandler {
+    private final BufferedWriter writer;
+
+    public WriteHandler(OutputStream out) {
+        writer = new BufferedWriter(new OutputStreamWriter(out));
+    }
+
+    public void appendLine(int num) throws IOException {
+        writer.append(Integer.toString(num)).append("\n");
+    }
+
+    public void flush() throws IOException {
+        writer.flush();
     }
 }
