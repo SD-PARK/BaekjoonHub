@@ -10,19 +10,21 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         int cmdCount = Integer.parseInt(reader.readLine());
-        bitSet = 0;
 
+        bitSet = 0;
         for (int i=0; i<cmdCount; i++) {
             StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+
             String operation = tokenizer.nextToken();
             int x = (tokenizer.hasMoreTokens()) ? Integer.parseInt(tokenizer.nextToken()) : 0;
+
             executeCommand(operation, x);
         }
 
         System.out.print(stringBuilder);
     }
 
-    private static void executeCommand(String operation, int x) throws IOException {
+    private static void executeCommand(String operation, int x) {
         switch(operation) {
             case "add":
                 bitSet |= (1 << (x - 1));
