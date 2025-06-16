@@ -43,7 +43,7 @@ public class Main {
     }
 
     private static int findShortestPath(MazeContext context) {
-        Queue<Minsik> q = new LinkedList<>();
+        Queue<Minsik> q = new ArrayDeque<>();
 
         q.offer(new Minsik(context.startX, context.startY, 0, 1));
         context.setVisited(context.startX, context.startY, 0);
@@ -85,14 +85,23 @@ enum KeyMask {
         return mask;
     }
 
+    private static final int ASCII_SIZE = 128;
+    private static final KeyMask[] CACHE = new KeyMask[ASCII_SIZE];
+
+    static {
+        for (KeyMask key : values()) {
+            CACHE[key.name().charAt(0)] = key;
+        }
+    }
+
     public static boolean hasKey(int keySet, char doorOrKey) {
-        KeyMask keyMask = KeyMask.valueOf(String.valueOf(Character.toUpperCase(doorOrKey)));
-        return (keySet & keyMask.getMask()) != 0;
+        KeyMask keyMask = CACHE[Character.toUpperCase(doorOrKey)];
+        return keyMask != null && (keySet & keyMask.mask) != 0;
     }
 
     public static int addKey(int keySet, char key) {
-        KeyMask keyMask = KeyMask.valueOf(String.valueOf(Character.toUpperCase(key)));
-        return keySet | keyMask.getMask();
+        KeyMask keyMask = CACHE[Character.toUpperCase(key)];
+        return keyMask != null ? keySet | keyMask.mask : keySet;
     }
 }
 
