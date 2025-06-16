@@ -23,45 +23,48 @@ public class Main {
         char[][] map = new char[height][width];
         boolean[][][] isVisited = new boolean[height][width][1 << MAX_KEY_COUNT];
 
-        Location minsikLocation = null;
+        int startX = 0;
+        int startY = 0;
 
         for (int h=0; h<height; h++) {
             String str = reader.readLine();
+
             for (int w=0; w<width; w++) {
                 map[h][w] = str.charAt(w);
-                if (map[h][w] == '0') minsikLocation = new Location(w, h);
+
+                if (map[h][w] == '0') {
+                    startX = w;
+                    startY = h;
+                }
             }
         }
 
-        return new MazeContext(width, height, map, isVisited, minsikLocation);
+        return new MazeContext(width, height, startX, startY, map, isVisited);
     }
 
     private static int findShortestPath(MazeContext context) {
         Queue<Minsik> q = new LinkedList<>();
 
-        Location minsikLocation = context.getMinsikLocation();
-        q.offer(new Minsik(minsikLocation, 0, 1));
-        context.setVisited(minsikLocation, 0);
+        q.offer(new Minsik(context.startX, context.startY, 0, 1));
+        context.setVisited(context.startX, context.startY, 0);
 
         while (!q.isEmpty()) {
             Minsik minsik = q.poll();
-            Location currentLocation = minsik.getLocation();
 
             for (int i=0; i<4; i++) {
-                int nextX = currentLocation.x + dx[i];
-                int nextY = currentLocation.y + dy[i];
-                Location nextLocation = new Location(nextX, nextY);
+                int nextX = minsik.x + dx[i];
+                int nextY = minsik.y + dy[i];
 
-                if (!context.canMove(minsik, nextLocation)) continue; // 이동 가능한가?
+                if (!context.canMove(minsik, nextX, nextY)) continue; // 이동 가능한가?
 
-                int nextKeySet = context.tryGetKey(nextLocation, minsik.keySet);
+                int nextKeySet = context.tryGetKey(nextX, nextY, minsik.keySet);
 
-                if (context.isVisited(nextLocation, nextKeySet)) continue; // 방문한 적 있나?
+                if (context.isVisited(nextX, nextY, nextKeySet)) continue; // 방문한 적 있나?
 
-                if (context.isDestination(nextLocation)) return minsik.depth; // 도착했나?
+                if (context.isDestination(nextX, nextY)) return minsik.depth; // 도착했나?
 
-                q.offer(new Minsik(nextLocation, nextKeySet, minsik.depth+1));
-                context.setVisited(nextLocation, nextKeySet);
+                q.offer(new Minsik(nextX, nextY, nextKeySet, minsik.depth+1));
+                context.setVisited(nextX, nextY, nextKeySet);
             }
         }
 
@@ -93,53 +96,42 @@ enum KeyMask {
     }
 }
 
-class Location {
-    public final int x, y;
+class Minsik {
+    public final int x, y, keySet, depth;
 
-    public Location(int x, int y) {
+    public Minsik(int x, int y, int keySet, int depth) {
         this.x = x;
         this.y = y;
-    }
-}
-
-class Minsik {
-    private final Location location;
-    public final int keySet, depth;
-
-    public Minsik(Location location, int keySet, int depth) {
-        this.location = location;
         this.keySet = keySet;
         this.depth = depth;
     }
-
-    public Location getLocation() { return location; }
 }
 
 class MazeContext {
-    public final int width, height;
+    public final int width, height, startX, startY;
     private final char[][] map;
     private final boolean[][][] isVisited;
-    private final Location minsikLocation;
 
-    public MazeContext(int width, int height, char[][] map, boolean[][][] isVisited, Location minsikLocation) {
+    public MazeContext(int width, int height, int startX, int startY, char[][] map, boolean[][][] isVisited) {
         this.width = width;
         this.height = height;
+        this.startX = startX;
+        this.startY = startY;
         this.map = map;
         this.isVisited = isVisited;
-        this.minsikLocation = minsikLocation;
     }
 
-    public int tryGetKey(Location loc, int keySet) {
-        char cell = map[loc.y][loc.x];
+    public int tryGetKey(int x, int y, int keySet) {
+        char cell = map[y][x];
         if (Character.isLowerCase(cell)) {
             return KeyMask.addKey(keySet, cell);
         }
         return keySet;
     }
-    public boolean canMove(Minsik minsik, Location loc) {
-        if (!inBounds(loc)) return false;
+    public boolean canMove(Minsik minsik, int x, int y) {
+        if (!inBounds(x, y)) return false;
 
-        char cell = map[loc.y][loc.x];
+        char cell = map[y][x];
         if (cell == '#') return false;
 
         if (Character.isUpperCase(cell)) {
@@ -148,9 +140,8 @@ class MazeContext {
 
         return true;
     }
-    public boolean inBounds(Location loc) { return loc.x >= 0 && loc.x < width && loc.y >= 0 && loc.y < height; }
-    public boolean isDestination(Location loc) { return map[loc.y][loc.x] == '1'; }
-    public boolean isVisited(Location loc, int keySet) { return isVisited[loc.y][loc.x][keySet]; }
-    public void setVisited(Location loc, int keySet) { isVisited[loc.y][loc.x][keySet] = true; }
-    public Location getMinsikLocation() { return minsikLocation; }
+    public boolean inBounds(int x, int y) { return x >= 0 && x < width && y >= 0 && y < height; }
+    public boolean isDestination(int x, int y) { return map[y][x] == '1'; }
+    public boolean isVisited(int x, int y, int keySet) { return isVisited[y][x][keySet]; }
+    public void setVisited(int x, int y, int keySet) { isVisited[y][x][keySet] = true; }
 }
